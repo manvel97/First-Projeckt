@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1><b><i>Japanischer Tee</i></b></h1>
+  <a href="page2.html" target="_blank">japanischer tee</a>
+
+  <p style="font-size:150px;"><u>Սենց մի բան</u></p>
+  <ul><li>Giannis Maderfakis</li></ul>
+  <ol><li>Peacemaker</li></ol>
+
+  <label>Ուտաչնիտ</label>
+  <input id="myText"><br><br>
+  <button id="mySubmit">submit</button>
+
+  <input type="search" id="textbox">
+  <div id="result"></div>
+
+  <script>
+    // fetching all users from a REST API
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(response => response.json())
+      .then(users => showUsers(users));
+
+    function showUsers(users) {
+      const ul = document.createElement("ul");
+      for (let user of users) {
+        const li = document.createElement("li");
+        li.innerText = user.name;
+        ul.appendChild(li);
+      }
+      document.getElementById("result").appendChild(ul);
+    }
+
+    // filter users list
+    const textbox = document.getElementById("textbox");
+    textbox.oninput = filterUsers;
+
+    function filterUsers() {
+      const liElements = document.querySelectorAll("li");
+      for (let li of liElements) {
+        const currentName = li.innerText.toLowerCase();
+        const searchText = this.value.toLowerCase();
+        if (!currentName.includes(searchText)) {
+          li.setAttribute("hidden", true);
+        } else {
+          li.removeAttribute("hidden");
+        }
+      }
+    }
+  </script>
+</body>
+</html>
+
