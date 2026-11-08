@@ -7,7 +7,6 @@
 // Загружаем пользователей из API
 // Загружаем пользователей
 fetch('https://jsonplaceholder.typicode.com/users')
-
   .then(response => response.json())
   .then(users => {
     // Меняем имена и email
@@ -27,15 +26,11 @@ fetch('https://jsonplaceholder.typicode.com/users')
     users[6].email = "iron.chancellor@history.meme";
 
     showUsers(users);
-    
-    fetch('https://jsonplaceholder.typicode.com/users')
-  .then(response => response.json())
-  .then(users => { /* ... */ })
+  })
   .catch(error => {
-    document.getElementById("result").innerHTML = 
+    document.getElementById("result").innerHTML =
       '<p class="text-danger">Не удалось загрузить пользователей 😕</p>';
     console.error(error);
-  });
   });
 
 // Функция отображения
@@ -74,8 +69,7 @@ function showUsers(users) {
     card.className = "card shadow-sm d-flex flex-row align-items-center p-2";
 
     const img = document.createElement("img");
-    img.src = images[index];
-    img.alt = user.name;
+    img.src = images[index] || "https://via.placeholder.com/60";    img.alt = user.name;
     img.className = "rounded-circle me-3";
     img.width = 60;
     img.height = 60;
@@ -93,8 +87,7 @@ function showUsers(users) {
 
     const memeText = document.createElement("div");
     memeText.className = "text-primary fst-italic";
-    memeText.textContent = memes[index];
-
+    memeText.textContent = memes[index] || "«No meme for this legend yet 😢»";
     cardBody.appendChild(cardTitle);
     cardBody.appendChild(cardText);
     cardBody.appendChild(memeText);
@@ -117,68 +110,7 @@ function filterUsers() {
   const cards = document.querySelectorAll("#result .card");
 
   cards.forEach(card => {
-    const nameEl = card.querySelector(".card-title");
-    const emailEl = card.querySelector(".text-muted");
-    const memeEl = card.querySelector(".fst-italic");
-
-    const name = nameEl?.textContent || "";
-    const email = emailEl?.textContent || "";
-    const meme = memeEl?.textContent || "";
-
-    const combined = `${name} ${email} ${meme}`.toLowerCase();
-
-    const clearBtn = document.getElementById("clearBtn");
-clearBtn.addEventListener("click", () => {
-  textbox.value = "";
-  filterUsers(); // сбросит фильтр и подсветку
-  });
-
-if (searchText.length > 0) {
-  if (combined.includes(searchText)) {
-    card.style.display = "block"; // показываем совпавшие
-    highlightText(nameEl, searchText);
-    highlightText(emailEl, searchText);
-    highlightText(memeEl, searchText);
-  } else {
-    card.style.display = "none"; // скрываем остальных
-  }
-} else {
-  card.style.display = "block"; // поле пустое → показываем всех
-  if (nameEl) nameEl.innerHTML = name;
-  if (emailEl) emailEl.innerHTML = email;
-  if (memeEl) memeEl.innerHTML = meme;
-}
-
-
-  });
-}
- 
-function escapeRegex(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-// и в highlightText используй:
-const regex = new RegExp(`(${escapeRegex(searchText)})`, "gi");
-
-
-// Подсветка текста
-function highlightText(element, searchText) {
-  if (!element) return;
-  const text = element.textContent;
-  if (!searchText) {
-    element.innerHTML = text;
-    return;
-  }
-  const regex = new RegExp(`(${searchText})`, "gi");
-  element.innerHTML = text.replace(regex, `<mark>$1</mark>`);
-}
- 
-
-function filterUsers() {
-  const searchText = textbox.value.toLowerCase().trim();
-  const cards = document.querySelectorAll("#result .card");
-
-  cards.forEach(card => {
-    const col = card.closest(".col-md-6"); // родительская колонка
+    const col = card.closest(".col-md-6");
     const nameEl = card.querySelector(".card-title");
     const emailEl = card.querySelector(".text-muted");
     const memeEl = card.querySelector(".fst-italic");
@@ -191,12 +123,12 @@ function filterUsers() {
 
     if (searchText.length > 0) {
       if (combined.includes(searchText)) {
-        col.style.display = "block"; // показываем колонку
+        col.style.display = "block";
         highlightText(nameEl, searchText);
         highlightText(emailEl, searchText);
         highlightText(memeEl, searchText);
       } else {
-        col.style.display = "none"; // скрываем колонку целиком
+        col.style.display = "none";
       }
     } else {
       col.style.display = "block";
@@ -206,3 +138,24 @@ function filterUsers() {
     }
   });
 }
+
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Подсветка текста
+function highlightText(element, searchText) {
+  if (!element) return;
+  const text = element.textContent;
+  if (!searchText) {
+    element.innerHTML = text;
+    return;
+  }
+  const regex = new RegExp(`(${escapeRegex(searchText)})`, "gi");
+  element.innerHTML = text.replace(regex, `<mark>$1</mark>`);
+} 
+// Показываем приветственное окно при загрузке страницы
+window.addEventListener("DOMContentLoaded", () => {
+  const welcomeModal = new bootstrap.Modal(document.getElementById("welcomeModal"));
+  welcomeModal.show();
+});
